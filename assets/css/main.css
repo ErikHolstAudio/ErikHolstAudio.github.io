@@ -582,7 +582,10 @@ outline-color:var(--white-color) ;
 	.home-img img {
 		display: none;
 	}
-
+	.temp-image img {
+		width: 70vw;
+		margin-top: -2rem;
+	}
 	.services,
 	.portfolio {
 		padding-bottom: 7rem;
