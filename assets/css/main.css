@@ -3786,7 +3786,7 @@ input, select, textarea {
 			}
 
 		#main > footer {
-			text-align: center;
+			text-align: left;
 		}
 
 		#main > .post {
@@ -3973,12 +3973,13 @@ input, select, textarea {
 		background-color: #ffffffdc;
 		color: #909498;
 		cursor: default;
-		position: relative;
+		position:relative;
 		margin: 0 auto;
 		width: calc(100% - 4rem);
 		max-width: 72rem;
 		z-index: 2;
-	}
+		padding: 2rem 0rem 0rem 4rem ;
+		}
 
 		#footer input, #footer select, #footer textarea {
 			color: #717981;
