@@ -3961,6 +3961,9 @@ input, select, textarea {
 			}
 
 		}
+		ul.no-bullets{
+			list-style-type: '↪ ';
+		  }
 
 /* Footer */
 
