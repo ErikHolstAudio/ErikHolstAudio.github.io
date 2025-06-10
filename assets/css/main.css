@@ -3283,17 +3283,18 @@ input, select, textarea {
 			
 
 		}
-		video {
+		video
+		{
+			position: absolute;
+			top: 0;
+			left: 0;
 			width: 100%;
 			height: auto;
-			
-			& time
-			{
-				position: absolute;
-				top: 0;
-				left: 0;
-				z-index: -100;
-			}
+			z-index: -100;
+		}
+		article > video {
+			width: 100%;
+			height: auto;
 		}
 
 /* Intro */
