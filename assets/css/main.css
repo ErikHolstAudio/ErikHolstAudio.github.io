@@ -3285,17 +3285,18 @@ input, select, textarea {
 		}
 
 		video {
-			width: 100%;
-			height: auto;
-		}
-
-		div .video {
 			position: absolute;
 			top: 0;
+			width: 100%;
+			height: auto;
 			left: 0;
 			z-index: -100;
 		}
 
+		iframe {
+			width: 100%;
+			height: auto;
+		}
 /* Intro */
 
 	#intro {
