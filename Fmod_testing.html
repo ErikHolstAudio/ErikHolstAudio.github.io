@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FMOD Audio Player</title>
+    <style>
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        .controls {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FMOD Audio Player</h1>
+        <b id="playEvent0"></b><b id="playEvent1"></b>
+        <p class="clickscreen">Click or touch screen to unmute audio!</p>
+        <!--<button type="button" id="playEvent0" onclick="playEvent(0)" disabled>start the looping ambience</button><br/>
+        <br/>
+        <button type="button" id="playEvent1" onclick="playEvent(1)" disabled>stop the looping ambience</button><br/>
+        <br/>-->
+        <div class="controls">
+            <button onclick="playPause()">Play/Stop</button>
+            <!-- Add more buttons as needed -->
+        </div>
+        <div class = "bottominfo">
+            <output id="display_out">Please wait... Loading...</output><br/>
+            <br/>
+            <output id="display_out2"></output><br/>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="./assets/api/fmodstudioapi20226html5/api/studio/lib/fastcomp/wasm/fmodstudio.js"></script>
+    <script type="text/javascript" src="./assets/js/fmodtesting.js"></script>
+    
+    <script>
+        let audio = true;
+        let isPlaying = false;
+
+        function playPause() {
+            if (!audio) return;
+
+            try {
+                if (!isPlaying) {
+                    // Play the audio
+                    playEvent(0);
+                    isPlaying = true;
+                    document.getElementById("playEvent0").innerHTML = "Playing";
+                } else {
+                    // Stop the audio
+                    playEvent(1);
+                    isPlaying = false;
+                    document.getElementById("playEvent1").innerHTML = "Stopped";
+                }
+            } catch (err) {
+                console.error('FMOD play/pause error:', err);
+            }
+        }
+
+        // Cleanup when page unloads
+        window.onunload = function() {
+            if (audio) {
+                audio.release();
+            }
+            FMOD.release();
+        };
+    </script>
+</body>
+</html>
