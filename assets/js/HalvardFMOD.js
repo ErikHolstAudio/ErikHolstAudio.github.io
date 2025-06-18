@@ -1,12 +1,14 @@
 /*==============================================================================
 Simple Event Example
-Copyright (c), Firelight Technologies Pty, Ltd 2012-2019.
+Copyright (c), Firelight Technologies Pty, Ltd 2012-2024.
 
 This example demonstrates the various ways of playing an event.
 
 #### Looping Ambience Event ####
 A single instance is started or stopped based on user input.
 
+For information on using FMOD example code in your own programs, visit
+https://www.fmod.com/legal
 ==============================================================================*/
 
 //==============================================================================
@@ -42,12 +44,12 @@ function CHECK_RESULT(result)
 }
 
 // Will be called before FMOD runs, but after the Emscripten runtime has initialized
-// Call FMOD file preloading functions here to mount local files.  Otherwise load custom data from memory or use own file system. 
-function prerun() 
+// Call FMOD file preloading functions here to mount local files.  Otherwise load custom data from memory or use own file system.
+function prerun()
 {
     console.log('FMOD preRun. Mounting files...');
 
-    var fileUrl = "/assets/media/";
+    var fileUrl = "https://bjorkas.no/fmodtest/HTML5/";
     var fileName;
     var folderName = "/";
     var canRead = true;
@@ -63,9 +65,7 @@ function prerun()
         //document.querySelector("#display_out2").value = "Loading " + fileName[count] + "...";
 
         FMOD.FS_createPreloadedFile(folderName, fileName[count], fileUrl + fileName[count], canRead, canWrite);
-        console.log(count+" Bank")
     }
-      console.log('Finished Prerun');
 }
 
 // Called when the Emscripten runtime has initialized
@@ -90,13 +90,13 @@ function main()
     CHECK_RESULT(result);
 
     gSystemCore = outval.val;
-    
+
     // Optional.  Setting DSP Buffer size can affect latency and stability.
     // Processing is currently done in the main thread so anything lower than 2048 samples can cause stuttering on some devices.
     console.log("set DSP Buffer size.\n");
     result = gSystemCore.setDSPBufferSize(2048, 2);
     CHECK_RESULT(result);
-    
+
     // Optional.  Set sample rate of mixer to be the same as the OS output rate.
     // This can save CPU time and latency by avoiding the automatic insertion of a resampler at the output stage.
     console.log("Set mixer sample rate");
@@ -110,14 +110,16 @@ function main()
     // 1024 virtual channels
     result = gSystem.initialize(1024, FMOD.STUDIO_INIT_NORMAL, FMOD.INIT_NORMAL, null);
     CHECK_RESULT(result);
-   
+
     // Starting up your typical JavaScript application loop
     console.log("initialize Application\n");
 
     initApplication();
 
-    // Set up iOS/Chrome workaround.  Webaudio is not allowed to start unless screen is touched or button is clicked.
-    function resumeAudio() 
+    // Set the framerate to 50 frames per second, or 20ms.
+   
+    console.log("Start game loop\n");
+     function resumeAudio() 
     {
         if (!gAudioResumed)
         {
@@ -142,15 +144,12 @@ function main()
         document.addEventListener('click', resumeAudio);
     }
 
-    // Set the framerate to 50 frames per second, or 20ms.
-    console.log("Start game loop\n");
-
     window.setInterval(updateApplication, 20);
 
     return FMOD.OK;
 }
 
-// Function called when user presses HTML Play Sound button, with parameter 0, 1 or 2.
+// Function called when user presses HTML Play Sound button, with parameter 0 or 1.
 function playEvent(soundid)
 {
     if (soundid == 0)
@@ -171,31 +170,32 @@ function loadBank(name)
 }
 
 // Called from main, does some application setup.  In our case we will load some sounds.
-function initApplication() 
+function initApplication()
 {
     console.log("Loading events\n");
-    
+
     loadBank("Master.bank");
     loadBank("Master.strings.bank");
- 
+
     // Get the Looping Ambience event
     var loopingAmbienceDescription = {};
     CHECK_RESULT( gSystem.getEvent("event:/Music", loopingAmbienceDescription) );
-    
+
     CHECK_RESULT( loopingAmbienceDescription.val.createInstance(loopingAmbienceInstance) );
-    
+
+
     // Once the loading is finished, re-enable the disabled buttons.
-    document.getElementById("playEvent0").disabled = false;     
-    document.getElementById("playEvent1").disabled = false;     
+    document.getElementById("playEvent0").disabled = false;
+    document.getElementById("playEvent1").disabled = false;
 }
 
 // Called from main, on an interval that updates at a regular rate (like in a game loop).
 // Prints out information, about the system, and importantly calles System::udpate().
-function updateApplication() 
+function updateApplication()
 {
     var result;
     var cpu = {};
-    
+
     result = gSystemCore.getCPUUsage(cpu);
     CHECK_RESULT(result);
 
@@ -203,16 +203,17 @@ function updateApplication()
     result = gSystemCore.getChannelsPlaying(channelsplaying, null);
     CHECK_RESULT(result);
 
-    //document.querySelector("#display_out").value = "Channels Playing = " + channelsplaying.val + 
-    //                                               " : CPU = dsp " + cpu.dsp.toFixed(2) + 
-    //                                               "% stream " + cpu.stream.toFixed(2) + 
-    //                                               "% update " + cpu.update.toFixed(2) + 
-    //                                               "% total " + (cpu.dsp + cpu.stream + cpu.update).toFixed(2) + 
+    //document.querySelector("#display_out").value = "Channels Playing = " + channelsplaying.val +
+    //                                               " : CPU = dsp " + cpu.dsp.toFixed(2) +
+    //                                               "% stream " + cpu.stream.toFixed(2) +
+    //                                               "% update " + cpu.update.toFixed(2) +
+    //                                               "% total " + (cpu.dsp + cpu.stream + cpu.update).toFixed(2) +
     //                                               "%";
+
     var numbuffers = {};
     var buffersize = {};
     result = gSystemCore.getDSPBufferSize(buffersize, numbuffers);
-    CHECK_RESULT(result) 
+    CHECK_RESULT(result);
 
     var rate = {};
     result = gSystemCore.getSoftwareFormat(rate, null, null);
@@ -221,7 +222,7 @@ function updateApplication()
     var sysrate = {};
     result = gSystemCore.getDriverInfo(0, null, null, sysrate, null, null);
     CHECK_RESULT(result);
-    
+
     var ms = numbuffers.val * buffersize.val * 1000 / rate.val;
     //document.querySelector("#display_out2").value = "Mixer rate = " + rate.val + "hz : System rate = " + sysrate.val + "hz : DSP buffer size = " + numbuffers.val + " buffers of " + buffersize.val + " samples (" + ms.toFixed(2) + " ms)";
 
